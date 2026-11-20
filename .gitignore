@@ -1,0 +1,9 @@
+# GTFS verileri büyük, repoya girmesin
+data/*
+
+*.class
+target/
+out/
+.DS_Store
+.idea/
+.vscode/
