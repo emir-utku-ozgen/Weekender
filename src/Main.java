@@ -6,9 +6,15 @@ public class Main {
 
         Map<String, Integer> stopIndex = new HashMap<>();
         List<Connection> connections = GtfsReader.readConnections("data/de-fv/stop_times.txt", stopIndex);
-
-        System.out.println("Durak sayısı: " + stopIndex.size());
-        System.out.println("Bağlantı sayısı: " + connections.size());
-        System.out.println("İlk bağlantı: " + connections.get(0));
+        connections.sort(Comparator.comparingInt(Connection::depTime));
+        for (int i = 0; i < 5; i++) {
+            Connection c = connections.get(i);
+            System.out.println(
+                    GtfsTime.formatTime(c.depTime()) + " → " +
+                            GtfsTime.formatTime(c.arrTime()) +
+                            "  trip=" + c.tripId() +
+                            "  " + c.fromStop() + " → " + c.toStop()
+            );
+        }
     }
 }

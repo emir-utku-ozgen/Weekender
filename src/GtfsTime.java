@@ -7,4 +7,9 @@ public class GtfsTime {
         int totalSeconds=hour*3600+minute*60+second;
         return totalSeconds;
     }
+    public static String formatTime(int seconds){
+        int hour=seconds/3600;
+        int minutes=(seconds%3600)/60;
+        return String.format("%02d:%02d", hour, minutes);
+    }
 }
