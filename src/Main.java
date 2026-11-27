@@ -15,7 +15,11 @@ public class Main {
         System.out.println("Kaynak durak " + source + ", hedef durak " + target +
                 ", başlangıç " + GtfsTime.formatTime(startTime));
 
+        long start = System.nanoTime();
         Journey journey = JourneyPlanner.plan(connections, stopIndex.size(), source, target, startTime);
+        long end = System.nanoTime();
+        System.out.println("CSA süresi: " + (end - start) / 1_000_000.0 + " ms");
+
         RoutePrinter.print(journey);
     }
 }
