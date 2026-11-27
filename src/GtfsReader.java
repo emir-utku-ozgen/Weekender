@@ -112,5 +112,63 @@ public class GtfsReader {
             }
         return connections;
         }
+    public static Map<Integer, StopLocation> readStopLocations(String path, Map<String, Integer> stopIndex){
+        Map<Integer,StopLocation> locations= new HashMap<>();
+        try(BufferedReader reader=new BufferedReader(new FileReader(path))){
+            String header=reader.readLine();
+            String []columns=header.split(",");
+            int idCol=-1;
+            int latCol=-1;
+            int lonCol=-1;
+            int i;
+            for(i=0;i<columns.length;i++){
+                if(columns[i].equals("stop_id")){
+                    idCol=i;
+                }
+                if(columns[i].equals("stop_lat")){
+                    latCol=i;
+                }
+                if(columns[i].equals("stop_lon")){
+                    lonCol=i;
+                }
+            }
+            String line ;
+            while((line=reader.readLine())!=null){
+                String [] values=line.split(",");
+                String stopId=values[idCol];
+                if(!stopIndex.containsKey(stopId)){
+                    continue;
+                }
+                int idx=stopIndex.get(stopId);
+                double lat = Double.parseDouble(values[latCol]);
+                double lon = Double.parseDouble(values[lonCol]);
+                locations.put(idx, new StopLocation(lat, lon));
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return locations;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 

@@ -25,7 +25,7 @@ public class RoutePrinterTest {
 
     @Test
     void printsEmptyRouteMessageWhenRouteIsEmpty() {
-        Journey journey = new Journey(List.of(), Integer.MAX_VALUE);
+        Journey journey = new Journey(List.<Connection>of(), Integer.MAX_VALUE, 0.0);
 
         RoutePrinter.print(journey);
 
@@ -36,7 +36,7 @@ public class RoutePrinterTest {
     void printsEachConnectionAndArrivalTime() {
         Connection c1 = new Connection(0, 1, 100, 200, "trip1");
         Connection c2 = new Connection(1, 2, 250, 300, "trip2");
-        Journey journey = new Journey(List.of(c1, c2), 300);
+        Journey journey = new Journey(List.of(c1, c2), 300, 12.5);
 
         RoutePrinter.print(journey);
 
@@ -46,5 +46,6 @@ public class RoutePrinterTest {
         assertTrue(output.contains("0 → 1"));
         assertTrue(output.contains("1 → 2"));
         assertTrue(output.contains("Varış: " + GtfsTime.formatTime(300)));
+        assertTrue(output.contains("Tahmini fiyat: 12,50 €") || output.contains("Tahmini fiyat: 12.50 €"));
     }
 }

@@ -13,5 +13,6 @@ public class RoutePrinter {
             );
         }
         System.out.println("Varış: " + GtfsTime.formatTime(journey.arrivalTime()));
+        System.out.println("Tahmini fiyat: " + String.format("%.2f", journey.estimatedCost()) + " €");
     }
 }

@@ -7,6 +7,7 @@ public class Main {
         Map<String, Integer> stopIndex = new HashMap<>();
         List<Connection> connections = GtfsReader.readConnections("data/de-fv/stop_times.txt", stopIndex);
         connections.sort(Comparator.comparingInt(Connection::depTime));
+        Map<Integer, StopLocation> locations = GtfsReader.readStopLocations("data/de-fv/stops.txt", stopIndex);
 
         int source = 0;
         int target = 100;
@@ -16,7 +17,7 @@ public class Main {
                 ", başlangıç " + GtfsTime.formatTime(startTime));
 
         long start = System.nanoTime();
-        Journey journey = JourneyPlanner.plan(connections, stopIndex.size(), source, target, startTime);
+        Journey journey = JourneyPlanner.plan(connections, stopIndex.size(), source, target, startTime, locations);
         long end = System.nanoTime();
         System.out.println("CSA süresi: " + (end - start) / 1_000_000.0 + " ms");
 
