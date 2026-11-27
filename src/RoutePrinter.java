@@ -6,13 +6,13 @@ public class RoutePrinter {
         }
         for(Connection c:journey.route()){
             System.out.println(
-                    GtfsTime.formatTime(c.depTime()) + " → " +
-                            GtfsTime.formatTime(c.arrTime()) +
+                    GtfsTime.formatAbsolute(c.depTime()) + " → " +
+                            GtfsTime.formatAbsolute(c.arrTime()) +
                             "  trip=" + c.tripId() +
                             "  " + c.fromStop() + " → " + c.toStop()
             );
         }
-        System.out.println("Varış: " + GtfsTime.formatTime(journey.arrivalTime()));
+        System.out.println("Varış: " + GtfsTime.formatAbsolute(journey.arrivalTime()));
         System.out.println("Tahmini fiyat: " + String.format("%.2f", journey.estimatedCost()) + " €");
     }
 }

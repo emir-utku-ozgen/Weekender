@@ -1,4 +1,6 @@
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.time.LocalDate;
 public class TripCalendar {
     private final Map<String,String> tripServices;
@@ -21,7 +23,22 @@ public class TripCalendar {
         }
         return calendar.isActiveOn(date);
     }
-
-
-
+    public List<Connection> buildTimetable(List<Connection> connections, LocalDate startDate, LocalDate endDate) {
+        List<Connection> result = new ArrayList<>();
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+            long dayOffset = date.toEpochDay() * 86400L;
+            for (Connection c : connections) {
+                if (isTripActiveOn(c.tripId(), date)) {
+                    result.add(new Connection(
+                            c.fromStop(), c.toStop(),
+                            (int) (dayOffset + c.depTime()),
+                            (int) (dayOffset + c.arrTime()),
+                            c.tripId()
+                    ));
+                }
+            }
+        }
+        result.sort(Comparator.comparingInt(Connection::depTime));
+        return result;
+    }
 }

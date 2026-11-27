@@ -45,7 +45,7 @@ public class RoutePrinterTest {
         assertTrue(output.contains("trip=trip2"));
         assertTrue(output.contains("0 → 1"));
         assertTrue(output.contains("1 → 2"));
-        assertTrue(output.contains("Varış: " + GtfsTime.formatTime(300)));
+        assertTrue(output.contains("Varış: " + GtfsTime.formatAbsolute(300)));
         assertTrue(output.contains("Tahmini fiyat: 12,50 €") || output.contains("Tahmini fiyat: 12.50 €"));
     }
 }
