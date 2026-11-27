@@ -16,5 +16,16 @@ public class Main {
                             "  " + c.fromStop() + " → " + c.toStop()
             );
         }
+
+        int source = 0;
+        int startTime = connections.get(0).depTime();
+        CsaResult result = Csa.run(connections, stopIndex.size(), source, startTime);
+
+        int reachable = 0;
+        for (int t : result.earliestArrival()) {
+            if (t != Integer.MAX_VALUE) reachable++;
+        }
+        System.out.println("Kaynak durak " + source + ", başlangıç " + GtfsTime.formatTime(startTime));
+        System.out.println("Ulaşılabilen durak sayısı: " + reachable + " / " + stopIndex.size());
     }
 }
