@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.time.LocalDate;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -149,8 +150,94 @@ public class GtfsReader {
         }
         return locations;
     }
+    public static Map<String,String> readTripServices(String path){
+        Map<String,String> tripServices= new HashMap<>();
+        try(BufferedReader reader=new BufferedReader(new FileReader(path))){
+            String header= reader.readLine();
+            String []columns=header.split(",");
+            int tripCol=-1,serviceCol=-1;
+            int i;
+            for(i=0;i<columns.length;i++){
+                if(columns[i].equals("trip_id")){
+                    tripCol=i;
+                }
+                if(columns[i].equals("service_id")) {
+                    serviceCol = i;
+                }
+            }
+            String line;
+            while((line=reader.readLine())!=null){
+                String [] values=line.split(",");
+                tripServices.put(values[tripCol],values[serviceCol]);
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
+        return tripServices;
+    }
+    public static Map<String, Calendar> readCalendars(String path) {
+        Map<String, Calendar> calendars = new HashMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+            String header = reader.readLine();
+            String[] columns = header.split(",");
+            int monCol=-1, tueCol=-1, wedCol=-1, thuCol=-1, friCol=-1, satCol=-1, sunCol=-1, startCol=-1, endCol=-1, serviceCol=-1;
+            for (int i = 0; i < columns.length; i++) {
+                switch (columns[i]) {
+                    case "monday" -> monCol = i;
+                    case "tuesday" -> tueCol = i;
+                    case "wednesday" -> wedCol = i;
+                    case "thursday" -> thuCol = i;
+                    case "friday" -> friCol = i;
+                    case "saturday" -> satCol = i;
+                    case "sunday" -> sunCol = i;
+                    case "start_date" -> startCol = i;
+                    case "end_date" -> endCol = i;
+                    case "service_id" -> serviceCol = i;
+                }
+            }
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] v = line.split(",");
+                Calendar calendar = new Calendar(
+                        v[monCol].equals("1"), v[tueCol].equals("1"), v[wedCol].equals("1"),
+                        v[thuCol].equals("1"), v[friCol].equals("1"), v[satCol].equals("1"), v[sunCol].equals("1"),
+                        LocalDate.parse(v[startCol], java.time.format.DateTimeFormatter.BASIC_ISO_DATE),
+                        LocalDate.parse(v[endCol], java.time.format.DateTimeFormatter.BASIC_ISO_DATE)
+                );
+                calendars.put(v[serviceCol], calendar);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return calendars;
+    }
 
+    public static Map<String, Map<LocalDate, Integer>> readCalendarExceptions(String path) {
+        Map<String, Map<LocalDate, Integer>> exceptions = new HashMap<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+            String header = reader.readLine();
+            String[] columns = header.split(",");
+            int serviceCol = -1, typeCol = -1, dateCol = -1;
+            for (int i = 0; i < columns.length; i++) {
+                if (columns[i].equals("service_id")) serviceCol = i;
+                if (columns[i].equals("exception_type")) typeCol = i;
+                if (columns[i].equals("date")) dateCol = i;
+            }
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] v = line.split(",");
+                String serviceId = v[serviceCol];
+                int type = Integer.parseInt(v[typeCol]);
+                LocalDate date = LocalDate.parse(v[dateCol], java.time.format.DateTimeFormatter.BASIC_ISO_DATE);
+
+                exceptions.computeIfAbsent(serviceId, k -> new HashMap<>()).put(date, type);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return exceptions;
+    }
 
 
 
